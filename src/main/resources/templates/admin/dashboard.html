@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header-head('Admin Dashboard - CareerPilot AI')}"></head>
+<body>
+    <div th:replace="~{admin/admin-nav :: admin-bar('dashboard')}"></div>
+
+    <main class="content-wrapper">
+        <div class="container" style="padding-top: 2rem;">
+            <!-- Header title -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                    <h1 style="font-size: 2.2rem; margin-bottom: 0.3rem;">Administrator Overview</h1>
+                    <p style="color: var(--text-sub); font-size: 0.95rem;">
+                        Logged in as: <strong style="color: #fbbf24;" th:text="${adminUser}">admin</strong> &bull; System Status: <span class="badge badge-success">Online &amp; Active</span>
+                    </p>
+                </div>
+                <div style="display: flex; gap: 0.8rem;">
+                    <a th:href="@{/admin/users/export}" class="btn btn-secondary btn-sm">
+                        📥 Export All Candidates (CSV)
+                    </a>
+                    <a th:href="@{/admin/prompts}" class="btn btn-primary btn-sm">
+                        ⚙️ Configure AI Prompts
+                    </a>
+                </div>
+            </div>
+
+            <!-- Stats Metric Cards Grid -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem;">
+                <div class="card" style="border-left: 4px solid var(--primary); padding: 1.6rem;">
+                    <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-sub); text-transform: uppercase;">TOTAL REGISTERED USERS</div>
+                    <div style="font-size: 2.3rem; font-weight: 800; color: #fff; margin-top: 0.4rem;" th:text="${totalCandidates}">2</div>
+                    <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.4rem;">Candidates saved in database</div>
+                </div>
+
+                <div class="card" style="border-left: 4px solid var(--indigo); padding: 1.6rem;">
+                    <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-sub); text-transform: uppercase;">MOCK INTERVIEWS COMPLETED</div>
+                    <div style="font-size: 2.3rem; font-weight: 800; color: #818cf8; margin-top: 0.4rem;" th:text="${completedInterviews}">1</div>
+                    <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.4rem;">5-10 minute voice sessions</div>
+                </div>
+
+                <div class="card" style="border-left: 4px solid var(--emerald); padding: 1.6rem;">
+                    <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-sub); text-transform: uppercase;">AVERAGE ATS SCORE</div>
+                    <div style="font-size: 2.3rem; font-weight: 800; color: #34d399; margin-top: 0.4rem;" th:text="${avgAtsScore + '/100'}">84/100</div>
+                    <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.4rem;">Resume benchmark accuracy</div>
+                </div>
+
+                <div class="card" style="border-left: 4px solid var(--gold); padding: 1.6rem;">
+                    <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-sub); text-transform: uppercase;">AVERAGE INTERVIEW SCORE</div>
+                    <div style="font-size: 2.3rem; font-weight: 800; color: #fbbf24; margin-top: 0.4rem;" th:text="${avgInterviewScore + '/100'}">88/100</div>
+                    <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.4rem;">AI evaluated responses</div>
+                </div>
+            </div>
+
+            <!-- Quick Access Sections Banner -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem;">
+                <div class="card" style="padding: 1.8rem; background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9)); border: 1px solid rgba(59, 130, 246, 0.3);">
+                    <div style="font-size: 1.6rem; margin-bottom: 0.6rem;">👥</div>
+                    <h3 style="font-size: 1.25rem; margin-bottom: 0.4rem;">Candidate Database</h3>
+                    <p style="color: var(--text-sub); font-size: 0.88rem; margin-bottom: 1.2rem;">
+                        Inspect all students using CareerPilot AI, review their full resumes, detected roles, ATS scores, and interview performance transcripts.
+                    </p>
+                    <a th:href="@{/admin/users}" class="btn btn-secondary btn-sm">
+                        View All Candidates &rarr;
+                    </a>
+                </div>
+
+                <div class="card" style="padding: 1.8rem; background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9)); border: 1px solid rgba(245, 158, 11, 0.3);">
+                    <div style="font-size: 1.6rem; margin-bottom: 0.6rem;">⚙️</div>
+                    <h3 style="font-size: 1.25rem; margin-bottom: 0.4rem;">Live AI Prompt Editor</h3>
+                    <p style="color: var(--text-sub); font-size: 0.88rem; margin-bottom: 1.2rem;">
+                        Modify prompt templates for Resume Analysis, Mock Interview Questions, and Answer Evaluation on the fly without changing any Java code.
+                    </p>
+                    <a th:href="@{/admin/prompts}" class="btn btn-secondary btn-sm">
+                        Manage AI Prompts &rarr;
+                    </a>
+                </div>
+            </div>
+
+            <!-- Recent Candidates Table -->
+            <div class="card" style="padding: 2rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem;">
+                    <h3 style="font-size: 1.3rem;">Recent Candidate Sessions</h3>
+                    <a th:href="@{/admin/users}" style="font-size: 0.88rem; color: var(--primary);">View all &rarr;</a>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Candidate</th>
+                                <th>Detected Job Role</th>
+                                <th>Experience</th>
+                                <th>ATS Score</th>
+                                <th>Interview Score</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="c : ${recentCandidates}">
+                                <td>
+                                    <strong style="color: #fff;" th:text="${c.fullName}">Aarav Sharma</strong>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);" th:text="${c.email != null ? c.email : 'No email'}">aarav@example.com</div>
+                                </td>
+                                <td>
+                                    <span class="badge badge-primary" th:text="${c.detectedRole}">Full Stack Java Developer</span>
+                                </td>
+                                <td style="font-size: 0.85rem; color: var(--text-sub);" th:text="${c.experienceLevel}">Fresher</td>
+                                <td>
+                                    <span class="badge badge-success" th:text="${c.atsScore + '/100'}">86/100</span>
+                                </td>
+                                <td>
+                                    <span th:if="${c.interviewCompleted}" class="badge badge-warning" th:text="${c.interviewScore + '/100'}">88/100</span>
+                                    <span th:unless="${c.interviewCompleted}" style="color: var(--text-muted); font-size: 0.85rem;">Pending</span>
+                                </td>
+                                <td style="font-size: 0.85rem; color: var(--text-muted);" th:text="${#temporals.format(c.createdAt, 'dd MMM yyyy')}">03 Oct 2026</td>
+                                <td>
+                                    <a th:href="@{'/admin/users/' + ${c.id}}" class="btn btn-secondary btn-sm" style="padding: 0.3rem 0.7rem; font-size: 0.8rem;">
+                                        View Details
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr th:if="${recentCandidates == null or recentCandidates.isEmpty()}">
+                                <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">No candidates recorded yet.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

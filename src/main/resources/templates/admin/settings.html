@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header-head('System & AI Settings - CareerPilot AI Admin')}"></head>
+<body>
+    <div th:replace="~{admin/admin-nav :: admin-bar('settings')}"></div>
+
+    <main class="content-wrapper">
+        <div class="container" style="padding-top: 2rem; max-width: 850px;">
+            <div style="margin-bottom: 2rem;">
+                <h1 style="font-size: 2.2rem; margin-bottom: 0.3rem;">System &amp; AI Engine Settings</h1>
+                <p style="color: var(--text-sub); font-size: 0.95rem;">
+                    Configure AI engine providers, API keys, and default mock interview duration parameters.
+                </p>
+            </div>
+
+            <!-- Flash messages -->
+            <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+            <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
+
+            <div class="card card-glass" style="padding: 2.5rem; border: 1px solid rgba(59, 130, 246, 0.35);">
+                <form th:action="@{/admin/settings/save}" method="POST">
+                    <!-- AI Provider Option -->
+                    <div class="form-group" style="margin-bottom: 2rem;">
+                        <label class="form-label" style="font-size: 1.05rem;">Active AI Evaluation Engine</label>
+                        <p style="color: var(--text-sub); font-size: 0.85rem; margin-bottom: 0.8rem;">
+                            Choose between our high-speed built-in smart NLP engine (requires zero external setup) or connect directly to Gemini / OpenAI.
+                        </p>
+                        <select name="aiProvider" class="form-control" style="font-size: 1rem; padding: 0.8rem;">
+                            <option value="BUILTIN" th:selected="${settings.get('AI_PROVIDER') == 'BUILTIN'}">
+                                🚀 Built-in Smart NLP Engine (Instant, Offline, 100% Reliable - Recommended)
+                            </option>
+                            <option value="GEMINI" th:selected="${settings.get('AI_PROVIDER') == 'GEMINI'}">
+                                🌐 Google Gemini 1.5 Flash (Requires Gemini API Key)
+                            </option>
+                            <option value="OPENAI" th:selected="${settings.get('AI_PROVIDER') == 'OPENAI'}">
+                                🌐 OpenAI GPT-4o Mini (Requires OpenAI API Key)
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Gemini API Key -->
+                    <div class="form-group" style="margin-bottom: 1.8rem;">
+                        <label class="form-label">Google Gemini API Key (Optional)</label>
+                        <input type="password" name="geminiApiKey" class="form-control" th:value="${settings.get('GEMINI_API_KEY')}" placeholder="AIzaSy...">
+                        <small style="color: var(--text-muted); font-size: 0.8rem;">Used when AI Engine is set to GEMINI.</small>
+                    </div>
+
+                    <!-- OpenAI API Key -->
+                    <div class="form-group" style="margin-bottom: 1.8rem;">
+                        <label class="form-label">OpenAI API Key (Optional)</label>
+                        <input type="password" name="openaiApiKey" class="form-control" th:value="${settings.get('OPENAI_API_KEY')}" placeholder="sk-proj-...">
+                        <small style="color: var(--text-muted); font-size: 0.8rem;">Used when AI Engine is set to OPENAI.</small>
+                    </div>
+
+                    <hr style="border: 0; border-top: 1px solid var(--border-subtle); margin: 2rem 0;">
+
+                    <h3 style="font-size: 1.2rem; margin-bottom: 1.2rem;">Mock Interview Configuration</h3>
+
+                    <!-- Interview Duration -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+                        <div class="form-group">
+                            <label class="form-label">Default Interview Time Limit (Minutes)</label>
+                            <select name="interviewMinutes" class="form-control">
+                                <option value="5" th:selected="${settings.get('INTERVIEW_TIME_MINUTES') == '5'}">5 Minutes (Quick Drill)</option>
+                                <option value="7" th:selected="${settings.get('INTERVIEW_TIME_MINUTES') == '7'}">7 Minutes</option>
+                                <option value="8" th:selected="${settings.get('INTERVIEW_TIME_MINUTES') == '8' or settings.get('INTERVIEW_TIME_MINUTES') == null}">8 Minutes (Standard)</option>
+                                <option value="10" th:selected="${settings.get('INTERVIEW_TIME_MINUTES') == '10'}">10 Minutes (Comprehensive)</option>
+                            </select>
+                            <small style="color: var(--text-muted); font-size: 0.8rem;">Per specification: 5 to 10 minutes session duration.</small>
+                        </div>
+
+                        <!-- Number of Questions -->
+                        <div class="form-group">
+                            <label class="form-label">Number of Questions</label>
+                            <select name="questionCount" class="form-control">
+                                <option value="3" th:selected="${settings.get('QUESTION_COUNT') == '3'}">3 Questions</option>
+                                <option value="5" th:selected="${settings.get('QUESTION_COUNT') == '5' or settings.get('QUESTION_COUNT') == null}">5 Questions (Recommended)</option>
+                                <option value="7" th:selected="${settings.get('QUESTION_COUNT') == '7'}">7 Questions</option>
+                            </select>
+                            <small style="color: var(--text-muted); font-size: 0.8rem;">Questions synthesized dynamically per detected role.</small>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: flex-end;">
+                        <button type="submit" class="btn btn-primary btn-lg" style="padding: 0.85rem 2.5rem;">
+                            Save Settings &rarr;
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

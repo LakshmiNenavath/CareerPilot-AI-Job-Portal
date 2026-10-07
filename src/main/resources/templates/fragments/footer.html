@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <footer th:fragment="footer" class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div style="display: flex; align-items: center; gap: 0.8rem;">
+                    <div class="brand-icon" style="width: 32px; height: 32px; font-size: 0.95rem;">⚡</div>
+                    <div>
+                        <strong style="color: #fff; font-size: 1.05rem;">CareerPilot AI</strong>
+                        <p style="color: var(--text-muted); font-size: 0.82rem;">Empowering Students & Graduates for Technical Interview Success</p>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 1.5rem; font-size: 0.88rem;">
+                    <a th:href="@{/}" style="color: var(--text-sub);">Home</a>
+                    <a th:href="@{/upload}" style="color: var(--text-sub);">Upload Resume</a>
+                    <a th:href="@{/admin}" style="color: var(--gold);">Admin Access (/admin)</a>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: 1.2rem; font-size: 0.82rem; color: var(--text-muted);">
+                <span>&copy; 2026 CareerPilot AI - Built with Java 17 &amp; Spring Boot. All rights reserved.</span>
+                <span>No Account Required &bull; Free Student Preparation Portal</span>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

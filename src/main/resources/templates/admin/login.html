@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header-head('Administrator Login - CareerPilot AI')}"></head>
+<body>
+    <header th:replace="~{fragments/header :: header-nav('admin')}"></header>
+
+    <main class="content-wrapper" style="display: flex; align-items: center; justify-content: center; min-height: 75vh;">
+        <div class="container" style="max-width: 440px;">
+            <div class="card card-glass" style="padding: 2.5rem; border: 1px solid rgba(245, 158, 11, 0.35); box-shadow: 0 15px 35px rgba(0,0,0,0.6);">
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <div style="width: 64px; height: 64px; background: rgba(245, 158, 11, 0.15); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 1rem; color: #fbbf24;">
+                        🔐
+                    </div>
+                    <h2 style="font-size: 1.8rem; margin-bottom: 0.3rem;">Administrator Login</h2>
+                    <p style="color: var(--text-sub); font-size: 0.88rem;">Secure access to CareerPilot AI Management Portal</p>
+                </div>
+
+                <!-- Error & Success Messages -->
+                <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}">
+                    Invalid credentials.
+                </div>
+                <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}">
+                    Logged out successfully.
+                </div>
+
+                <form th:action="@{/admin/login}" method="POST">
+                    <div class="form-group">
+                        <label class="form-label" for="username">Username</label>
+                        <input type="text" id="username" name="username" class="form-control" placeholder="admin" required autofocus autocomplete="username">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="password">Password</label>
+                        <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 1rem; background: linear-gradient(135deg, #f59e0b, #d97706); box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);">
+                        Sign In to Admin Panel &rarr;
+                    </button>
+                </form>
+
+                <div style="margin-top: 1.8rem; padding-top: 1.2rem; border-top: 1px solid var(--border-subtle); text-align: center; font-size: 0.82rem; color: var(--text-muted);">
+                    Default Credentials: <code style="color: #fbbf24; background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 4px;">admin</code> / <code style="color: #fbbf24; background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 4px;">admin123</code>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

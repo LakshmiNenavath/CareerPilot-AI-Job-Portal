@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div th:fragment="admin-bar(activeTab)" style="background: rgba(10, 14, 23, 0.95); border-bottom: 1px solid var(--border-subtle); padding: 0.8rem 2.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: gap;">
+        <div style="display: flex; align-items: center; gap: 1.5rem;">
+            <a th:href="@{/admin/dashboard}" style="display: flex; align-items: center; gap: 0.5rem; text-decoration: none;">
+                <span style="font-size: 1.2rem;">⚡</span>
+                <strong style="color: #fff; font-size: 1.05rem;">CareerPilot <span style="color: #fbbf24;">Admin Console</span></strong>
+            </a>
+            
+            <nav style="display: flex; gap: 0.8rem; margin-left: 1.5rem;">
+                <a th:href="@{/admin/dashboard}" class="btn btn-sm" th:classappend="${activeTab == 'dashboard'} ? 'btn-primary' : 'btn-secondary'" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">
+                    📊 Dashboard
+                </a>
+                <a th:href="@{/admin/users}" class="btn btn-sm" th:classappend="${activeTab == 'users'} ? 'btn-primary' : 'btn-secondary'" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">
+                    👥 All Users &amp; Resumes
+                </a>
+                <a th:href="@{/admin/prompts}" class="btn btn-sm" th:classappend="${activeTab == 'prompts'} ? 'btn-primary' : 'btn-secondary'" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">
+                    ⚙️ AI Prompt Management
+                </a>
+                <a th:href="@{/admin/settings}" class="btn btn-sm" th:classappend="${activeTab == 'settings'} ? 'btn-primary' : 'btn-secondary'" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">
+                    🔑 API &amp; Settings
+                </a>
+            </nav>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <a th:href="@{/}" target="_blank" style="color: var(--text-sub); font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem;">
+                <span>🌐 View Website</span>
+            </a>
+            <a th:href="@{/admin/logout}" class="btn btn-danger btn-sm" style="padding: 0.35rem 0.85rem; font-size: 0.82rem;">
+                Sign Out
+            </a>
+        </div>
+    </div>
+</body>
+</html>

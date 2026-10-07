@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header-head('Candidate Details - CareerPilot AI Admin')}"></head>
+<body>
+    <div th:replace="~{admin/admin-nav :: admin-bar('users')}"></div>
+
+    <main class="content-wrapper">
+        <div class="container" style="padding-top: 2rem; max-width: 1050px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <div>
+                    <a th:href="@{/admin/users}" style="color: var(--text-sub); font-size: 0.88rem; display: inline-flex; align-items: center; gap: 0.4rem; margin-bottom: 0.5rem;">
+                        &larr; Back to All Candidates
+                    </a>
+                    <h1 style="font-size: 2.2rem; margin-bottom: 0.3rem;" th:text="${candidate.fullName}">Candidate Details</h1>
+                    <p style="color: var(--text-sub); font-size: 0.95rem;">
+                        Candidate ID: #<span th:text="${candidate.id}">1</span> &bull; 
+                        Registered: <span th:text="${#temporals.format(candidate.createdAt, 'yyyy-MM-dd HH:mm')}">2026-10-03</span>
+                    </p>
+                </div>
+
+                <div style="display: flex; gap: 0.8rem;">
+                    <a th:href="@{'/analysis/' + ${candidate.id}}" target="_blank" class="btn btn-secondary btn-sm">
+                        View Student Analysis View &rarr;
+                    </a>
+                </div>
+            </div>
+
+            <!-- Profile Overview Cards -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                <div class="card" style="padding: 1.5rem;">
+                    <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-sub); text-transform: uppercase;">CONTACT INFO</div>
+                    <div style="margin-top: 0.6rem;">
+                        <div>Email: <strong style="color: #fff;" th:text="${candidate.email != null ? candidate.email : 'N/A'}">email@example.com</strong></div>
+                        <div>Phone: <strong style="color: #fff;" th:text="${candidate.phone != null ? candidate.phone : 'N/A'}">+91 9876543210</strong></div>
+                        <div>Resume File: <span style="color: var(--primary);" th:text="${candidate.resumeFileName}">resume.pdf</span></div>
+                    </div>
+                </div>
+
+                <div class="card" style="padding: 1.5rem;">
+                    <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-sub); text-transform: uppercase;">ROLE MATCH</div>
+                    <div style="margin-top: 0.6rem;">
+                        <div>Detected: <span class="badge badge-primary" th:text="${candidate.detectedRole}">Full Stack Java Developer</span></div>
+                        <div style="margin-top: 0.4rem;">Confidence: <span class="badge badge-success" th:text="${candidate.roleConfidence + '%'}">94%</span></div>
+                        <div style="margin-top: 0.4rem;">Experience: <strong style="color: #fff;" th:text="${candidate.experienceLevel}">Fresher</strong></div>
+                    </div>
+                </div>
+
+                <div class="card" style="padding: 1.5rem;">
+                    <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-sub); text-transform: uppercase;">SCORES</div>
+                    <div style="margin-top: 0.6rem;">
+                        <div>ATS Score: <span class="badge badge-success" th:text="${candidate.atsScore + '/100'}">86/100</span></div>
+                        <div style="margin-top: 0.4rem;">Interview Score: 
+                            <span th:if="${candidate.interviewCompleted}" class="badge badge-warning" th:text="${candidate.interviewScore + '/100'}">88/100</span>
+                            <span th:unless="${candidate.interviewCompleted}" style="color: var(--text-muted);">Incomplete</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pros, Cons, and Improvements -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.8rem; margin-bottom: 2rem;">
+                <div class="card" style="border-left: 4px solid var(--emerald); padding: 1.5rem;">
+                    <h3 style="font-size: 1.15rem; margin-bottom: 0.8rem; color: #34d399;">Strengths (Pros)</h3>
+                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.6rem;">
+                        <li th:each="pro : ${pros}" style="font-size: 0.88rem; color: var(--text-main); display: flex; gap: 0.4rem;">
+                            <span style="color: var(--emerald);">&bull;</span>
+                            <span th:text="${pro}">Strength</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card" style="border-left: 4px solid var(--rose); padding: 1.5rem;">
+                    <h3 style="font-size: 1.15rem; margin-bottom: 0.8rem; color: #fb7185;">Weaknesses (Cons)</h3>
+                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.6rem;">
+                        <li th:each="con : ${cons}" style="font-size: 0.88rem; color: var(--text-main); display: flex; gap: 0.4rem;">
+                            <span style="color: var(--rose);">&bull;</span>
+                            <span th:text="${con}">Weakness</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Interview Transcript if completed -->
+            <div class="card" style="padding: 1.8rem; margin-bottom: 2rem;" th:if="${questions != null and !questions.isEmpty()}">
+                <h3 style="font-size: 1.3rem; margin-bottom: 1.2rem;">Mock Interview Answers &amp; Feedback</h3>
+                <div style="display: flex; flex-direction: column; gap: 1.2rem;">
+                    <div th:each="q, stat : ${questions}" style="background: rgba(10, 14, 23, 0.6); padding: 1.2rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
+                            <strong style="color: #60a5fa;" th:text="${'Question ' + (stat.index + 1) + ' (' + q.category + ')'}">Q1</strong>
+                            <span class="badge badge-success" th:text="${(q.answerScore != null ? q.answerScore : 0) + '/100'}">88/100</span>
+                        </div>
+                        <p style="font-weight: 600; color: #fff; margin-bottom: 0.5rem;" th:text="${q.questionText}"></p>
+                        <div style="background: rgba(255,255,255,0.03); padding: 0.8rem; border-radius: var(--radius-sm); margin-bottom: 0.5rem; font-size: 0.88rem; font-style: italic;" th:text="${q.candidateAnswer}"></div>
+                        <div style="color: #34d399; font-size: 0.85rem;" th:text="${'AI Feedback: ' + q.aiFeedback}"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Raw Extracted Resume Text -->
+            <div class="card" style="padding: 1.8rem; margin-bottom: 3rem;">
+                <h3 style="font-size: 1.2rem; margin-bottom: 0.8rem;">Raw Extracted Resume Text</h3>
+                <pre style="background: rgba(10, 14, 23, 0.9); padding: 1.2rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); color: var(--text-sub); font-size: 0.85rem; max-height: 350px; overflow-y: auto; white-space: pre-wrap;" th:text="${candidate.extractedResumeText}">Resume text...</pre>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

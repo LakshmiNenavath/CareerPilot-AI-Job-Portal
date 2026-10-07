@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header-head('Upload Resume - CareerPilot AI')}"></head>
+<body>
+    <header th:replace="~{fragments/header :: header-nav('upload')}"></header>
+
+    <main class="content-wrapper">
+        <div class="container" style="max-width: 850px; padding-top: 3.5rem;">
+            <!-- Header section -->
+            <div style="text-align: center; margin-bottom: 2.5rem;">
+                <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); padding: 0.3rem 0.9rem; border-radius: var(--radius-full); margin-bottom: 1rem;">
+                    <span style="font-size: 0.8rem; font-weight: 700; color: #60a5fa;">STEP 1: RESUME SCAN &amp; ROLE MATCHING</span>
+                </div>
+                <h1 style="font-size: 2.6rem; margin-bottom: 0.6rem;">Upload Your Resume</h1>
+                <p style="color: var(--text-sub); font-size: 1.05rem;">
+                    Our AI parser will analyze your technical experience, compute your ATS score, and detect the best job role for you.
+                </p>
+            </div>
+
+            <!-- Upload Card -->
+            <div class="card card-glass" style="padding: 2.5rem; border: 2px dashed rgba(59, 130, 246, 0.35); text-align: center; transition: all 0.3s ease; position: relative;" id="resumeDropArea">
+                <form id="resumeUploadForm" enctype="multipart/form-data">
+                    <input type="file" id="resumeFileInput" name="file" accept=".pdf,.docx,.txt" style="display: none;">
+                    
+                    <div style="width: 76px; height: 76px; background: rgba(59, 130, 246, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; color: #60a5fa; font-size: 2rem;">
+                        📄
+                    </div>
+
+                    <h3 style="font-size: 1.35rem; margin-bottom: 0.5rem;">Drag &amp; Drop Your Resume Here</h3>
+                    <p style="color: var(--text-sub); font-size: 0.95rem; margin-bottom: 1.5rem;">
+                        Supports PDF (.pdf), Microsoft Word (.docx), or Plain Text (.txt) &bull; Max 25MB
+                    </p>
+
+                    <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+                        <button type="button" class="btn btn-primary" onclick="document.getElementById('resumeFileInput').click();">
+                            📁 Choose File from Device
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="openPasteBtn">
+                            📋 Or Paste Resume Text
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Processing status overlay -->
+                <div id="uploadStatus" style="display: none; margin-top: 2rem; padding: 1.2rem; background: rgba(10, 14, 23, 0.8); border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 0.8rem;">
+                        <div id="statusSpinner" class="spinner" style="width: 22px; height: 22px; border: 3px solid rgba(255,255,255,0.2); border-top-color: #3b82f6; border-radius: 50%; animation: spin 1s infinite linear;"></div>
+                        <span id="statusText" style="font-weight: 600; font-size: 0.95rem;">Analyzing resume text...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Guarantee Badges -->
+            <div style="display: flex; justify-content: center; gap: 2rem; margin-top: 2rem; color: var(--text-muted); font-size: 0.85rem; flex-wrap: wrap;">
+                <span>🔒 Private &amp; Secure Processing</span>
+                <span>⚡ Real-Time ATS Evaluation</span>
+                <span>🎯 Instant Role Detection</span>
+            </div>
+        </div>
+
+        <!-- Paste Text Modal -->
+        <div id="pasteModal" style="display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center; padding: 1.5rem;">
+            <div class="card" style="width: 100%; max-width: 650px; max-height: 90vh; display: flex; flex-direction: column;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem;">
+                    <h3 style="font-size: 1.3rem;">Paste Your Resume Content</h3>
+                    <button type="button" id="closePasteBtn" style="background: transparent; border: none; color: var(--text-sub); font-size: 1.5rem; cursor: pointer;">&times;</button>
+                </div>
+                <p style="color: var(--text-sub); font-size: 0.9rem; margin-bottom: 1rem;">
+                    Paste your resume text below including your education, skills, projects, and work experience:
+                </p>
+                <textarea id="resumeTextInput" class="form-control" style="flex: 1; min-height: 250px; font-family: monospace; font-size: 0.88rem;" placeholder="e.g. John Doe&#10;Email: john@example.com&#10;Technical Skills: Java, Spring Boot, React, MySQL&#10;Projects: Built full-stack e-commerce application..."></textarea>
+                <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1.2rem;">
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('pasteModal').style.display='none'">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="submitPasteBtn">Scan &amp; Detect Role &rarr;</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+    <script th:src="@{/js/main.js}"></script>
+</body>
+</html>

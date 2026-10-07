@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header-head('Resume Analysis & Role Detection - CareerPilot AI')}"></head>
+<body>
+    <header th:replace="~{fragments/header :: header-nav('upload')}"></header>
+
+    <main class="content-wrapper">
+        <div class="container" style="padding-top: 2.5rem;">
+            <!-- Top Summary Card: Detected Role -->
+            <div class="card" style="background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98)); border: 1px solid rgba(59, 130, 246, 0.4); padding: 2.2rem; margin-bottom: 2rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem;">
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.6rem;">
+                            <span class="badge badge-primary">AI ROLE DETECTION COMPLETED</span>
+                            <span class="badge badge-success" th:text="${candidate.roleConfidence + '% MATCH CONFIDENCE'}">94% MATCH CONFIDENCE</span>
+                        </div>
+                        <h1 style="font-size: 2.4rem; margin-bottom: 0.4rem;">
+                            Detected Role: <span style="background: linear-gradient(135deg, #60a5fa, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;" th:text="${candidate.detectedRole}">Full Stack Java Developer</span>
+                        </h1>
+                        <p style="color: var(--text-sub); font-size: 1rem;">
+                            Candidate: <strong style="color: #fff;" th:text="${candidate.fullName}">Aarav Sharma</strong> &bull;
+                            Experience Level: <span class="badge badge-warning" th:text="${candidate.experienceLevel}">Entry-Level</span> &bull;
+                            Source: <span th:text="${candidate.resumeFileName != null ? candidate.resumeFileName : 'Resume Upload'}">Resume.pdf</span>
+                        </p>
+                    </div>
+
+                    <!-- Direct Mock Interview Launch CTA -->
+                    <div style="text-align: right;">
+                        <a th:href="@{'/interview/' + ${candidate.id}}" class="btn btn-primary btn-lg" style="box-shadow: 0 6px 25px rgba(59, 130, 246, 0.45); font-size: 1.05rem;">
+                            🎙️ Start AI Mock Interview &rarr;
+                        </a>
+                        <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.4rem;">5-10 Min Role-Tailored Technical Session</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scores & Metric Gauges Grid -->
+            <div style="display: grid; grid-template-columns: 280px 1fr; gap: 2rem; margin-bottom: 2rem;">
+                <!-- Overall ATS Score Gauge -->
+                <div class="card" style="text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem;">
+                    <h3 style="font-size: 1.1rem; color: var(--text-sub); margin-bottom: 1.2rem;">OVERALL ATS SCORE</h3>
+                    <div class="gauge-container">
+                        <svg class="gauge-svg" viewBox="0 0 120 120">
+                            <defs>
+                                <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#3b82f6"/>
+                                    <stop offset="100%" stop-color="#10b981"/>
+                                </linearGradient>
+                            </defs>
+                            <circle class="gauge-bg" cx="60" cy="60" r="48"/>
+                            <circle class="gauge-fill" id="atsScoreCircle" cx="60" cy="60" r="48"
+                                    stroke-dasharray="301.6"
+                                    th:attr="stroke-dashoffset=${301.6 - (candidate.atsScore / 100.0 * 301.6)}"/>
+                        </svg>
+                        <div class="gauge-text">
+                            <div class="gauge-number" th:text="${candidate.atsScore}">86</div>
+                            <div class="gauge-label">OUT OF 100</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 1.2rem;">
+                        <span th:if="${candidate.atsScore >= 80}" class="badge badge-success">Top Candidate Readiness</span>
+                        <span th:if="${candidate.atsScore >= 65 and candidate.atsScore < 80}" class="badge badge-warning">Moderate Readiness</span>
+                        <span th:if="${candidate.atsScore < 65}" class="badge badge-danger">Needs Optimization</span>
+                    </div>
+                </div>
+
+                <!-- Sub-Scores Breakdown & Executive AI Summary -->
+                <div class="card" style="padding: 2rem;">
+                    <h3 style="font-size: 1.2rem; margin-bottom: 1rem;">ATS Evaluation Breakdown</h3>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+                        <div style="background: rgba(10, 14, 23, 0.6); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                            <div style="font-size: 0.8rem; color: var(--text-sub);">Formatting &amp; Structure</div>
+                            <div style="font-size: 1.4rem; font-weight: 800; color: #60a5fa;" th:text="${subScores.get('formatting') + '/100'}">90/100</div>
+                        </div>
+                        <div style="background: rgba(10, 14, 23, 0.6); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                            <div style="font-size: 0.8rem; color: var(--text-sub);">Role Skill Relevance</div>
+                            <div style="font-size: 1.4rem; font-weight: 800; color: #34d399;" th:text="${subScores.get('skills') + '/100'}">88/100</div>
+                        </div>
+                        <div style="background: rgba(10, 14, 23, 0.6); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                            <div style="font-size: 0.8rem; color: var(--text-sub);">Measurable Impact (Metrics)</div>
+                            <div style="font-size: 1.4rem; font-weight: 800; color: #fbbf24;" th:text="${subScores.get('impact') + '/100'}">80/100</div>
+                        </div>
+                        <div style="background: rgba(10, 14, 23, 0.6); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                            <div style="font-size: 0.8rem; color: var(--text-sub);">Readability &amp; Conciseness</div>
+                            <div style="font-size: 1.4rem; font-weight: 800; color: #a78bfa;" th:text="${subScores.get('readability') + '/100'}">88/100</div>
+                        </div>
+                    </div>
+
+                    <h4 style="font-size: 1rem; color: var(--text-sub); margin-bottom: 0.5rem;">AI Executive Summary</h4>
+                    <p style="color: var(--text-main); font-size: 0.95rem; line-height: 1.6;" th:text="${candidate.resumeSummary}">
+                        The resume demonstrates solid competencies in full stack Java and modern web architectures.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Skills Found & Missing Keywords Section -->
+            <div class="card" style="margin-bottom: 2rem; padding: 2rem;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                    <div>
+                        <h3 style="font-size: 1.15rem; margin-bottom: 0.8rem; color: #34d399; display: flex; align-items: center; gap: 0.5rem;">
+                            <span>✓</span> Detected Technical Skills
+                        </h3>
+                        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                            <span th:each="skill : ${skills}" class="badge badge-success" style="font-size: 0.85rem; padding: 0.4rem 0.8rem;" th:text="${skill}">Java</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 style="font-size: 1.15rem; margin-bottom: 0.8rem; color: #fb7185; display: flex; align-items: center; gap: 0.5rem;">
+                            <span>⚠</span> Recommended Keywords for <span th:text="${candidate.detectedRole}">Role</span>
+                        </h3>
+                        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                            <span th:each="kw : ${missingKeywords}" class="badge badge-danger" style="font-size: 0.85rem; padding: 0.4rem 0.8rem;" th:text="'+ ' + ${kw}">+ Docker</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pros and Cons Grid -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+                <!-- Standout Strengths (Pros) -->
+                <div class="card" style="border-left: 4px solid var(--emerald); padding: 2rem;">
+                    <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1.2rem;">
+                        <span style="font-size: 1.5rem;">✅</span>
+                        <h3 style="font-size: 1.3rem; color: #fff;">Resume Strengths (Pros)</h3>
+                    </div>
+                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.9rem;">
+                        <li th:each="pro : ${pros}" style="display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.92rem; color: var(--text-main);">
+                            <span style="color: var(--emerald); font-weight: bold;">&bull;</span>
+                            <span th:text="${pro}">Clear project descriptions with active engineering action verbs.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Weaknesses & Rejection Risks (Cons) -->
+                <div class="card" style="border-left: 4px solid var(--rose); padding: 2rem;">
+                    <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1.2rem;">
+                        <span style="font-size: 1.5rem;">⚠️</span>
+                        <h3 style="font-size: 1.3rem; color: #fff;">ATS Weaknesses (Cons)</h3>
+                    </div>
+                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.9rem;">
+                        <li th:each="con : ${cons}" style="display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.92rem; color: var(--text-main);">
+                            <span style="color: var(--rose); font-weight: bold;">&bull;</span>
+                            <span th:text="${con}">Lacks quantifiable business or performance impact metrics.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Actionable Improvement Suggestions Roadmap -->
+            <div class="card" style="border-left: 4px solid var(--primary); padding: 2rem; margin-bottom: 3rem;">
+                <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1.2rem;">
+                    <span style="font-size: 1.5rem;">💡</span>
+                    <h3 style="font-size: 1.3rem; color: #fff;">Actionable Resume Improvement Suggestions</h3>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 0.9rem;">
+                    <div th:each="imp, stat : ${improvements}" style="background: rgba(10, 14, 23, 0.6); padding: 1.1rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); display: flex; gap: 1rem; align-items: flex-start;">
+                        <div style="width: 28px; height: 28px; border-radius: 50%; background: rgba(59, 130, 246, 0.2); color: #60a5fa; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem; flex-shrink: 0;" th:text="${stat.index + 1}">1</div>
+                        <p style="color: var(--text-main); font-size: 0.92rem; margin: 0; line-height: 1.5;" th:text="${imp}">Adopt the Google XYZ formula for all bullet points.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Next Step CTA -->
+            <div class="card text-center" style="background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95)); border: 1px solid rgba(59, 130, 246, 0.35); padding: 3rem;">
+                <span class="badge badge-primary" style="margin-bottom: 0.8rem;">STEP 2 OF 2: MOCK INTERVIEW</span>
+                <h2 style="font-size: 2.2rem; margin-bottom: 0.6rem;">Now Test Your Skills in a Live Mock Interview</h2>
+                <p style="color: var(--text-sub); max-width: 600px; margin: 0 auto 2rem;">
+                    Based on your detected role (<strong style="color:#fff;" th:text="${candidate.detectedRole}">Full Stack Java Developer</strong>), our AI Interviewer will conduct a 5-10 minute technical interview with voice questions and webcam preview.
+                </p>
+                <a th:href="@{'/interview/' + ${candidate.id}}" class="btn btn-primary btn-lg">
+                    Launch AI Mock Interview Now &rarr;
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

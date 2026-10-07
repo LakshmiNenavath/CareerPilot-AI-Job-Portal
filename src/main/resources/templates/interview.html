@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header-head('AI Mock Interview - CareerPilot AI')}"></head>
+<body>
+    <header th:replace="~{fragments/header :: header-nav('upload')}"></header>
+
+    <main class="content-wrapper">
+        <div class="container" style="max-width: 1050px; padding-top: 2.5rem;">
+            <!-- Hidden context fields -->
+            <input type="hidden" id="interviewCandidateId" th:value="${candidate.id}">
+            <input type="hidden" id="interviewMinutes" th:value="${interviewMinutes}">
+
+            <!-- Start Interview Preparation Screen -->
+            <div id="interviewStartScreen" class="card card-glass" style="padding: 3rem; text-align: center; border: 1px solid rgba(59, 130, 246, 0.4);">
+                <div style="width: 80px; height: 80px; background: rgba(59, 130, 246, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; margin: 0 auto 1.5rem; color: #60a5fa;">
+                    🎙️
+                </div>
+                <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); padding: 0.3rem 0.9rem; border-radius: var(--radius-full); margin-bottom: 1rem;">
+                    <span class="pulsing-dot"></span>
+                    <span style="font-size: 0.8rem; font-weight: 700; color: #34d399;">INTERVIEW ROOM READY</span>
+                </div>
+                <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem;">
+                    AI Technical Mock Interview
+                </h1>
+                <p style="color: var(--text-sub); font-size: 1.1rem; max-width: 650px; margin: 0 auto 2rem;">
+                    Position: <strong style="color: #fff;" th:text="${candidate.detectedRole}">Full Stack Java Developer</strong> &bull; 
+                    Candidate: <strong style="color: #fff;" th:text="${candidate.fullName}">Aarav Sharma</strong> &bull;
+                    Session Duration: <strong style="color: #60a5fa;" th:text="${interviewMinutes + ' Minutes'}">8 Minutes</strong>
+                </p>
+
+                <!-- Interview Features Grid -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.2rem; max-width: 800px; margin: 0 auto 2.5rem; text-align: left;">
+                    <div style="background: rgba(10, 14, 23, 0.6); padding: 1.2rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                        <div style="font-size: 1.4rem; margin-bottom: 0.3rem;">🗣️</div>
+                        <h4 style="font-size: 0.95rem; margin-bottom: 0.2rem;">AI Voice Interviewer</h4>
+                        <p style="font-size: 0.82rem; color: var(--text-sub);">The AI interviewer reads questions aloud in real-time.</p>
+                    </div>
+                    <div style="background: rgba(10, 14, 23, 0.6); padding: 1.2rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                        <div style="font-size: 1.4rem; margin-bottom: 0.3rem;">🎤</div>
+                        <h4 style="font-size: 0.95rem; margin-bottom: 0.2rem;">Speech-to-Text Input</h4>
+                        <p style="font-size: 0.82rem; color: var(--text-sub);">Speak answers naturally via microphone or type manually.</p>
+                    </div>
+                    <div style="background: rgba(10, 14, 23, 0.6); padding: 1.2rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                        <div style="font-size: 1.4rem; margin-bottom: 0.3rem;">📹</div>
+                        <h4 style="font-size: 0.95rem; margin-bottom: 0.2rem;">Webcam Simulation</h4>
+                        <p style="font-size: 0.82rem; color: var(--text-sub);">Turn on camera to practice real eye contact &amp; body language.</p>
+                    </div>
+                </div>
+
+                <button type="button" id="beginInterviewBtn" class="btn btn-primary btn-lg" style="padding: 1.1rem 3rem; font-size: 1.15rem;">
+                    🚀 Enter Interview Room Now &rarr;
+                </button>
+            </div>
+
+            <!-- Active Mock Interview Room -->
+            <div id="interviewActiveScreen" style="display: none;">
+                <!-- Header Status Bar -->
+                <div class="card" style="padding: 1rem 1.8rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <span id="questionCategory" class="badge badge-primary">Technical Architecture</span>
+                        <span id="questionCounter" style="color: var(--text-sub); font-size: 0.95rem; font-weight: 600;">Question 1 of 5</span>
+                    </div>
+
+                    <!-- Countdown Timer -->
+                    <div style="display: flex; align-items: center; gap: 0.8rem;">
+                        <span style="font-size: 0.85rem; color: var(--text-sub);">TIME REMAINING:</span>
+                        <div style="background: rgba(10, 14, 23, 0.9); border: 1px solid var(--border-subtle); padding: 0.4rem 0.9rem; border-radius: var(--radius-sm); font-family: monospace; font-size: 1.25rem; font-weight: 800; color: #60a5fa;" id="interviewTimerDisplay">
+                            08:00
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timer Progress Bar -->
+                <div style="height: 4px; background: rgba(255,255,255,0.06); border-radius: var(--radius-full); margin-bottom: 1.5rem; overflow: hidden;">
+                    <div id="interviewTimerProgress" style="height: 100%; width: 100%; background: var(--primary); transition: width 1s linear;"></div>
+                </div>
+
+                <!-- Main Interview Grid: Left Sidebars & Right Question -->
+                <div style="display: grid; grid-template-columns: 320px 1fr; gap: 1.8rem;">
+                    <!-- Left Column: AI Interviewer & Webcam Preview -->
+                    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                        <!-- AI Interviewer Card -->
+                        <div class="card text-center" style="padding: 1.5rem;">
+                            <div id="aiInterviewerAvatar" style="width: 80px; height: 80px; margin: 0 auto 1rem; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #6366f1); display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #fff; box-shadow: 0 0 20px rgba(59,130,246,0.3); transition: all 0.3s ease;">
+                                🤖
+                            </div>
+                            <h4 style="font-size: 1.05rem; margin-bottom: 0.2rem;">AI Technical Interviewer</h4>
+                            <p style="font-size: 0.8rem; color: var(--text-sub); margin-bottom: 1rem;">Senior Engineering Evaluator</p>
+                            
+                            <button type="button" id="speakQuestionBtn" class="btn btn-secondary btn-sm" style="width: 100%; font-size: 0.85rem; padding: 0.5rem;">
+                                🔊 Replay Question Audio
+                            </button>
+                        </div>
+
+                        <!-- Webcam Preview Box -->
+                        <div class="card" style="padding: 1.2rem; text-align: center;">
+                            <div style="position: relative; width: 100%; height: 180px; background: #000; border-radius: var(--radius-md); overflow: hidden; margin-bottom: 0.8rem; display: flex; align-items: center; justify-content: center;">
+                                <video id="webcamVideo" autoplay playsinline muted style="width: 100%; height: 100%; object-fit: cover;"></video>
+                                <span id="webcamStatus" class="badge badge-warning" style="position: absolute; top: 8px; right: 8px;">Camera Off</span>
+                            </div>
+                            <button type="button" id="toggleWebcamBtn" class="btn btn-secondary btn-sm" style="width: 100%; font-size: 0.85rem;">
+                                📷 Turn On Camera
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Question Box & Answer Area -->
+                    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                        <!-- Question Card -->
+                        <div class="card" style="border-left: 4px solid var(--primary); padding: 1.8rem;">
+                            <div style="font-size: 0.8rem; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem;">
+                                Current Interview Question
+                            </div>
+                            <h2 id="questionText" style="font-size: 1.35rem; line-height: 1.45; color: #fff;">
+                                Can you walk me through the architecture of a full-stack Java application you have built?
+                            </h2>
+                        </div>
+
+                        <!-- Answer Input Card -->
+                        <div class="card" style="padding: 1.8rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
+                                <label class="form-label" style="margin-bottom: 0;">Your Response:</label>
+                                <div style="display: flex; align-items: center; gap: 0.6rem;">
+                                    <button type="button" id="voiceRecordBtn" class="btn btn-secondary btn-sm" style="font-size: 0.85rem; padding: 0.4rem 0.8rem;">
+                                        🎙️ Speak Answer
+                                    </button>
+                                </div>
+                            </div>
+
+                            <textarea id="answerInput" class="form-control" rows="8" placeholder="Type your technical response here, or click 'Speak Answer' to dictate using your microphone...&#10;&#10;Tip: Structure your answer using the STAR method (Situation, Task, Action, Result) and mention specific frameworks, design patterns, and scalability choices." style="line-height: 1.6; font-size: 0.95rem;"></textarea>
+
+                            <div id="voiceRecordStatus" style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.5rem; min-height: 18px;">
+                                Click 'Speak Answer' to use your microphone.
+                            </div>
+
+                            <!-- Submission Actions -->
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; border-top: 1px solid var(--border-subtle); padding-top: 1.2rem;">
+                                <button type="button" id="skipQuestionBtn" class="btn btn-secondary" style="font-size: 0.88rem;">
+                                    Skip Question
+                                </button>
+                                <button type="button" id="submitAnswerBtn" class="btn btn-success btn-lg" style="padding: 0.85rem 2rem;">
+                                    Submit Answer &amp; Evaluate &rarr;
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Real-time Evaluation Modal -->
+        <div id="evalModal" style="display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); z-index: 2500; align-items: center; justify-content: center; padding: 1.5rem;">
+            <div class="card card-glass" style="width: 100%; max-width: 600px; padding: 2.2rem; border: 1px solid rgba(59, 130, 246, 0.4);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem;">
+                    <div style="display: flex; align-items: center; gap: 0.6rem;">
+                        <span style="font-size: 1.6rem;">⚡</span>
+                        <h3 style="font-size: 1.35rem;">Real-time AI Evaluation</h3>
+                    </div>
+                    <div class="badge badge-success" id="evalScore" style="font-size: 1.1rem; padding: 0.4rem 0.9rem;">88/100</div>
+                </div>
+
+                <div style="margin-bottom: 1.2rem; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.25); padding: 1rem; border-radius: var(--radius-md);">
+                    <div style="font-size: 0.8rem; font-weight: 700; color: #34d399; margin-bottom: 0.3rem;">STRONG POINTS IN YOUR ANSWER:</div>
+                    <p id="evalStrengths" style="font-size: 0.92rem; color: #f1f5f9; margin: 0;"></p>
+                </div>
+
+                <div style="margin-bottom: 1.5rem; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.25); padding: 1rem; border-radius: var(--radius-md);">
+                    <div style="font-size: 0.8rem; font-weight: 700; color: #fbbf24; margin-bottom: 0.3rem;">HOW TO ELEVATE TO SENIOR LEVEL:</div>
+                    <p id="evalImprovements" style="font-size: 0.92rem; color: #f1f5f9; margin: 0;"></p>
+                </div>
+
+                <div style="text-align: right;">
+                    <button type="button" id="nextQuestionBtn" class="btn btn-primary btn-lg" style="width: 100%;">
+                        Continue to Next Question &rarr;
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <style>
+        .ai-speaking {
+            box-shadow: 0 0 35px rgba(59, 130, 246, 0.8) !important;
+            transform: scale(1.08);
+        }
+    </style>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+    <script th:src="@{/js/interview.js}"></script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="header-head(pageTitle)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle != null ? pageTitle + ' - CareerPilot AI' : 'CareerPilot AI - Job Portal & Interview Preparation'}">CareerPilot AI</title>
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%233b82f6'><path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/></svg>">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <header th:fragment="header-nav(activePage)" class="navbar">
+        <a th:href="@{/}" class="nav-brand">
+            <div class="brand-icon">⚡</div>
+            <span>CareerPilot <span style="background: linear-gradient(135deg, #3b82f6, #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">AI</span></span>
+            <span class="brand-badge">STUDENT PORTAL</span>
+        </a>
+        <ul class="nav-links">
+            <li><a th:href="@{/}" class="nav-link" th:classappend="${activePage == 'home'} ? 'active' : ''">Home</a></li>
+            <li><a th:href="@{/upload}" class="nav-link" th:classappend="${activePage == 'upload'} ? 'active' : ''">ATS Scanner</a></li>
+            <li><a th:href="@{/upload}" class="nav-btn">Get Started &rarr;</a></li>
+            <li><a th:href="@{/admin}" class="admin-nav-link" title="Administrator Section">🔐 Admin Portal</a></li>
+        </ul>
+    </header>
+</body>
+</html>
