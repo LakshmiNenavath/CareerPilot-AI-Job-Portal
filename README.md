@@ -121,7 +121,7 @@ mvn spring-boot:run
 ## 🔐 Admin Panel Walkthrough (`/admin`)
 
 1. Navigate to `/admin` in your browser.
-2. Log in using `admin` / `admin123`.
+2. Log in using `admin` / `a*******`.
 3. **Dashboard:** Live analytics, average ATS score, total interviews, and recent candidates.
 4. **All Users (`/admin/users`):** View all candidates, filter by name/role, inspect detailed resumes, and download CSV export.
 5. **AI Prompt Management (`/admin/prompts`):** Edit prompt templates dynamically:
